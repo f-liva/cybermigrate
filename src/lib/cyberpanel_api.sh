@@ -134,21 +134,14 @@ cp_create_website() {
     }')"
 }
 
-# Create database on destination
+# Create database on destination via SSH (more reliable than API)
 # Usage: cp_create_database <domain> <dbname> <dbuser> <dbpass>
 cp_create_database() {
   local domain="$1" dbname="$2" dbuser="$3" dbpass="$4"
-  dst_cloud "submitDBCreation" "$(jq -n \
-    --arg d "$domain" \
-    --arg n "$dbname" \
-    --arg u "$dbuser" \
-    --arg p "$dbpass" \
-    '{
-      databaseWebsite: $d,
-      dbName: $n,
-      dbUsername: $u,
-      dbPassword: $p
-    }')"
+  ssh_dest "mysql -e \"CREATE DATABASE IF NOT EXISTS \\\`${dbname}\\\`; \
+    CREATE USER IF NOT EXISTS '${dbuser}'@'localhost' IDENTIFIED BY '${dbpass}'; \
+    GRANT ALL PRIVILEGES ON \\\`${dbname}\\\`.* TO '${dbuser}'@'localhost'; \
+    FLUSH PRIVILEGES;\""
 }
 
 # Issue SSL on destination

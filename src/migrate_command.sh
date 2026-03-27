@@ -252,18 +252,11 @@ if [[ -z "$skip_db" ]] && [[ -n "$db_list" ]]; then
       log_warn "Manually update the site configuration!"
     fi
 
-    # Create DB on destination
-    create_db_result=$(cp_create_database "$domain" "$dbname" "$dbuser" "$dbpass")
-    if json_success "$create_db_result"; then
-      log_ok "Database ${dbname} created on destination"
+    # Create DB on destination via SSH
+    if cp_create_database "$domain" "$dbname" "$dbuser" "$dbpass" 2>/dev/null; then
+      log_ok "Database ${dbname} created on destination (user: ${dbuser})"
     else
-      db_error=$(json_error "$create_db_result")
-      if echo "$db_error" | grep -qi "already exist"; then
-        log_warn "Database ${dbname} already exists"
-      else
-        log_error "DB creation failed: ${db_error}"
-        log_warn "Trying to continue with dump/import..."
-      fi
+      log_warn "DB creation had issues, trying to continue..."
     fi
 
     # Dump and import

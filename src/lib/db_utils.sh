@@ -85,17 +85,14 @@ db_random_password() {
   openssl rand -base64 16 | tr -d '/+=' | head -c 16
 }
 
-# List databases on source via MySQL directly
+# List databases for a domain from CyberPanel database
 db_list_from_mysql() {
   local domain="$1"
-  # CyberPanel names DBs as <domain_underscored>_<name>
-  local prefix
-  prefix=$(echo "$domain" | tr '.' '_' | tr '-' '_')
-  ssh_source "mysql -N -e \"SHOW DATABASES LIKE '${prefix}%'\""
+  ssh_source "mysql -N cyberpanel -e \"SELECT d.dbName FROM databases_databases d JOIN websiteFunctions_websites w ON d.website_id = w.id WHERE w.domain='${domain}'\" 2>/dev/null" | tr -d '\r'
 }
 
-# Get DB user for a database
+# Get DB user for a database from CyberPanel database
 db_get_user() {
   local dbname="$1"
-  ssh_source "mysql -N -e \"SELECT User FROM mysql.db WHERE Db='${dbname}' LIMIT 1\""
+  ssh_source "mysql -N cyberpanel -e \"SELECT dbUser FROM databases_databases WHERE dbName='${dbname}' LIMIT 1\" 2>/dev/null" | tr -d '\r'
 }
