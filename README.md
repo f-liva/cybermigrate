@@ -51,24 +51,18 @@ Built with [Bashly](https://bashly.dev/).
 ```bash
 git clone https://github.com/f-liva/cybermigrate.git
 cd cybermigrate
-cp .env.example .env
+
+# Interactive setup (recommended)
+./cybermigrate setup
 ```
 
-Edit `.env` with your server credentials:
+The setup wizard will guide you through configuring server credentials, testing connectivity, and exchanging SSH keys between servers.
+
+Alternatively, configure manually:
 
 ```bash
-# SOURCE server (migrate FROM)
-SOURCE_HOST=203.0.113.10
-SOURCE_PASS=your-admin-password
-SOURCE_SSH_USER=root
-
-# DESTINATION server (migrate TO)
-DEST_HOST=203.0.113.20
-DEST_PASS=your-admin-password
-DEST_SSH_USER=root
-
-# CyberPanel port (default: 8090)
-CYBERPANEL_PORT=8090
+cp .env.example .env
+nano .env
 ```
 
 <details>
@@ -107,6 +101,14 @@ CYBERPANEL_PORT=8090
 ```
 
 ## Commands
+
+### `setup`
+
+Interactive setup wizard. Configures your `.env` file, tests API and SSH connectivity, and exchanges SSH keys between source and destination servers for direct transfer.
+
+```bash
+./cybermigrate setup
+```
 
 ### `verify`
 
@@ -248,6 +250,8 @@ cybermigrate/
     ├── info_command.sh
     ├── migrate_command.sh
     ├── packages_command.sh
+    ├── setup_command.sh
+    ├── before.sh             # Env validation
     └── lib/
         ├── colors.sh        # Terminal colors
         ├── cyberpanel_api.sh# API wrapper

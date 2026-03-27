@@ -1,6 +1,6 @@
 name: cybermigrate
 help: Migrate websites between CyberPanel servers
-version: 0.1.0
+version: 1.1.0
 
 dependencies:
   curl: curl is required for CyberPanel API calls
