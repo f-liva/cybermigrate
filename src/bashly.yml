@@ -1,0 +1,107 @@
+name: cybermigrate
+help: Migrate websites between CyberPanel servers
+version: 0.1.0
+
+dependencies:
+  curl: curl is required for CyberPanel API calls
+  jq: jq is required for JSON parsing
+  ssh: ssh is required for remote operations
+  rsync: rsync is required for file transfer
+
+environment_variables:
+  - name: source_host
+    help: Source CyberPanel server hostname/IP
+    required: true
+  - name: source_pass
+    help: Source CyberPanel admin password
+    required: true
+  - name: dest_host
+    help: Destination CyberPanel server hostname/IP
+    required: true
+  - name: dest_pass
+    help: Destination CyberPanel admin password
+    required: true
+  - name: source_ssh_user
+    help: SSH user for source server
+    default: root
+  - name: dest_ssh_user
+    help: SSH user for destination server
+    default: root
+  - name: source_ssh_port
+    help: SSH port for source server
+    default: "22"
+  - name: dest_ssh_port
+    help: SSH port for destination server
+    default: "22"
+  - name: cyberpanel_port
+    help: CyberPanel HTTPS port
+    default: "8090"
+  - name: source_admin_user
+    help: Source CyberPanel admin username
+    default: admin
+  - name: dest_admin_user
+    help: Destination CyberPanel admin username
+    default: admin
+
+commands:
+  - name: verify
+    alias: v
+    help: Verify API and SSH connectivity to both servers
+
+  - name: list
+    alias: ls
+    help: List websites on the source CyberPanel server
+
+  - name: info
+    alias: i
+    help: Show website details (PHP, database, file size)
+    args:
+      - name: domain
+        required: true
+        help: Domain to inspect
+
+  - name: migrate
+    alias: m
+    help: Migrate a website from source server to destination server
+    args:
+      - name: domain
+        required: true
+        help: Domain to migrate
+    flags:
+      - long: --package
+        short: -p
+        arg: package
+        help: "Package on the destination server"
+        default: Default
+      - long: --owner
+        short: -o
+        arg: owner
+        help: "Website owner on destination (default: admin)"
+        default: admin
+      - long: --php
+        arg: php
+        help: "Force PHP version (e.g.: PHP 8.1). Default: same as source"
+      - long: --skip-files
+        help: Skip file transfer
+      - long: --skip-db
+        help: Skip database migration
+      - long: --skip-ssl
+        help: Skip SSL certificate issuance
+      - long: --dry-run
+        help: Show what would be done without executing
+      - long: --git-repo
+        short: -g
+        arg: repo
+        help: Git repository URL to configure on destination
+      - long: --git-branch
+        arg: branch
+        help: Git branch to use
+        default: main
+      - long: --deploy-script
+        short: -d
+        arg: script
+        help: Local path to the deploy script to install on the site
+
+  - name: packages
+    alias: pkg
+    help: List available packages on the destination server
