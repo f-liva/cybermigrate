@@ -11,16 +11,12 @@ dependencies:
 environment_variables:
   - name: source_host
     help: Source CyberPanel server hostname/IP
-    required: true
   - name: source_pass
     help: Source CyberPanel admin password
-    required: true
   - name: dest_host
     help: Destination CyberPanel server hostname/IP
-    required: true
   - name: dest_pass
     help: Destination CyberPanel admin password
-    required: true
   - name: source_ssh_user
     help: SSH user for source server
     default: root
@@ -105,3 +101,7 @@ commands:
   - name: packages
     alias: pkg
     help: List available packages on the destination server
+
+  - name: setup
+    alias: s
+    help: Interactive setup wizard - configure .env and exchange SSH keys between servers
